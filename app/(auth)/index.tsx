@@ -1,12 +1,14 @@
 import { useRouter } from "expo-router";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { H1, Text, YStack } from "tamagui";
 import { Button } from "@/components/Button";
 
 const TopPage = memo(() => {
   const { t } = useTranslation("top");
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   return (
     <YStack
@@ -15,7 +17,7 @@ const TopPage = memo(() => {
       justify="space-between"
       pt="$80"
       px="$8"
-      pb="$8"
+      pb={insets.bottom + 8}
     >
       <YStack gap="$4">
         <H1
