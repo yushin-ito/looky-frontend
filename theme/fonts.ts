@@ -39,12 +39,12 @@ const systemFont = createFont({
     true: "400",
   },
   letterSpacing: {
-    tighter: -0.05,
-    tight: -0.025,
+    tighter: -0.5,
+    tight: -0.25,
     normal: 0,
-    wide: 0.025,
-    wider: 0.05,
-    widest: 0.1,
+    wide: 0.5,
+    wider: 1,
+    widest: 2,
     true: 0,
   },
   face: {

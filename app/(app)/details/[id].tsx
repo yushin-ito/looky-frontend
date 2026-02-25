@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import { Share, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { toast } from "sonner-native";
-import { H1, ScrollView, Text, View, XStack, YStack } from "tamagui";
+import { H1, H2, ScrollView, Text, View, XStack, YStack } from "tamagui";
 import { Button } from "@/components/Button";
 import { Heart } from "@/components/Heart";
 import { Icons } from "@/components/Icons";
@@ -37,11 +37,7 @@ const DetailsPage = memo(() => {
     supabase
       .from("t_clothes")
       .select(`      
-        id,
-        title,
-        description,
-        category,
-        purchase_url,
+        *,
         like: t_like (count)
       `)
       .eq("like.user_id", session?.user.id ?? "")
@@ -179,22 +175,29 @@ const DetailsPage = memo(() => {
                   />
                 </View>
 
-                <YStack px="$5" gap="$2">
-                  <Text fontSize="$md" color="$mutedColor">
-                    {t("brand_name")}
-                  </Text>
-                  <Text fontSize="$md" color="$mutedColor">
-                    {data?.category}
-                  </Text>
-                  <H1 fontSize="$lg" color="$mutedColor">
-                    {data?.title}
-                  </H1>
-                  <Text fontSize="$xl" color="$mutedColor" fontWeight="$bold">
-                    {t("price")}
-                  </Text>
-                  <Text fontSize="$sm" color="$mutedColor">
-                    {data?.description}
-                  </Text>
+                <YStack px="$6" gap="$4" pt="$2" pb="$20">
+                  <YStack gap="$3">
+                    <H1 fontWeight="$bold" fontSize="$lg">
+                      {data?.title}
+                    </H1>
+                    <XStack gap="$1.5" items="flex-end">
+                      <H2
+                        fontWeight="$bold"
+                        fontSize="$3xl"
+                        letterSpacing="$wide"
+                      >
+                        ¥
+                        {new Intl.NumberFormat("ja-JP").format(
+                          Number(data?.price ?? 0),
+                        )}
+                      </H2>
+                      <Text fontSize="$sm" fontWeight="$bold" mb="$1.5">
+                        税込
+                      </Text>
+                    </XStack>
+                  </YStack>
+                  <View h="$px" bg="$borderColor" />
+                  <Text lineHeight="$md">{data?.description}</Text>
                 </YStack>
               </>
             )}
@@ -212,6 +215,7 @@ const DetailsPage = memo(() => {
         borderColor="$borderColor"
         items="center"
         justify="space-between"
+        bg="$background"
       >
         <XStack gap="$4">
           <Button

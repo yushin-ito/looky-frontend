@@ -17,7 +17,6 @@ export const signInWithEmail = async (email: string) => {
   });
 
   if (error) {
-    console.error(error);
     throw error;
   }
 
