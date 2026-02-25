@@ -1,4 +1,3 @@
-import { FlashList } from "@shopify/flash-list";
 import {
   useCursorInfiniteScrollQuery,
   useDeleteMutation,
@@ -12,7 +11,7 @@ import { Image } from "expo-image";
 import { Link } from "expo-router";
 import { memo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { TouchableOpacity } from "react-native";
+import { FlatList, TouchableOpacity, useWindowDimensions } from "react-native";
 import * as R from "remeda";
 import { toast } from "sonner-native";
 import { H1, Spinner, Text, View, XStack, YStack } from "tamagui";
@@ -104,6 +103,7 @@ const ClothesItem = memo(
 
 const DiscoverPage = memo(() => {
   const { t } = useTranslation("discover");
+  const { width } = useWindowDimensions();
   const session = useSessionStore((state) => state.session);
   const query = useSearchQueryStore((state) => state.query);
 
@@ -152,7 +152,7 @@ const DiscoverPage = memo(() => {
   const { trigger: insertLike } = useInsertMutation(
     supabase.from("t_like"),
     ["id"],
-    "*",
+    "clothes_id,user_id,id",
     {
       onSuccess: async (data) => {
         // @ts-expect-error
@@ -179,8 +179,7 @@ const DiscoverPage = memo(() => {
 
         await revalidateTables();
       },
-      onError: (error) => {
-        console.error(error);
+      onError: () => {
         toast.error(t("error"));
       },
     },
@@ -258,19 +257,17 @@ const DiscoverPage = memo(() => {
           </XStack>
         </YStack>
         {isLoading ? (
-          <FlashList
+          <FlatList
             numColumns={2}
-            data={Array.from({ length: 6 })}
-            estimatedItemSize={240}
             contentContainerStyle={{
               paddingHorizontal: 24,
+              paddingTop: 8,
+              paddingBottom: 8,
             }}
-            renderItem={({ index }) => (
-              <View
-                pt={index > 1 ? 16 : 0}
-                pl={index % 2 === 1 ? 8 : 0}
-                pr={index % 2 === 0 ? 8 : 0}
-              >
+            columnWrapperStyle={{ gap: 16 }}
+            data={Array.from({ length: 6 })}
+            renderItem={() => (
+              <View flex={1} mb="$4">
                 <Skeleton
                   w="100%"
                   aspectRatio={3 / 4}
@@ -281,14 +278,16 @@ const DiscoverPage = memo(() => {
             )}
           />
         ) : (
-          <FlashList
+          <FlatList
             numColumns={2}
-            data={data}
-            estimatedItemSize={240}
-            onEndReached={loadMore}
-            overrideProps={{
-              contentContainerStyle: { flexGrow: 1, paddingHorizontal: 24 },
+            contentContainerStyle={{
+              paddingHorizontal: 24,
+              paddingTop: 8,
+              paddingBottom: 8,
             }}
+            columnWrapperStyle={{ gap: 16 }}
+            data={data}
+            onEndReached={loadMore}
             ListFooterComponent={() =>
               isRefreshing && (
                 <View pt="$4" justify="center">
@@ -323,15 +322,11 @@ const DiscoverPage = memo(() => {
                 </YStack>
               </YStack>
             )}
-            renderItem={({ item, index }) => {
+            renderItem={({ item }) => {
               const isLiked = item.like?.[0]?.count > 0;
 
               return (
-                <View
-                  pt={index > 1 ? 16 : 0}
-                  pl={index % 2 === 1 ? 8 : 0}
-                  pr={index % 2 === 0 ? 8 : 0}
-                >
+                <View w={(width - 24 * 2 - 16) / 2} mb="$4">
                   <ClothesItem
                     id={item.id}
                     isLiked={isLiked}

@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)";
+    PostgrestVersion: "14.1";
   };
   public: {
     Tables: {
@@ -50,7 +50,9 @@ export type Database = {
           id: number;
           invalid: boolean | null;
           part: Database["public"]["Enums"]["part"] | null;
+          price: number | null;
           purchase_url: string | null;
+          stock: number;
           subcategory: Database["public"]["Enums"]["subcategory"] | null;
           title: string | null;
         };
@@ -63,7 +65,9 @@ export type Database = {
           id?: number;
           invalid?: boolean | null;
           part?: Database["public"]["Enums"]["part"] | null;
+          price?: number | null;
           purchase_url?: string | null;
+          stock?: number;
           subcategory?: Database["public"]["Enums"]["subcategory"] | null;
           title?: string | null;
         };
@@ -76,7 +80,9 @@ export type Database = {
           id?: number;
           invalid?: boolean | null;
           part?: Database["public"]["Enums"]["part"] | null;
+          price?: number | null;
           purchase_url?: string | null;
+          stock?: number;
           subcategory?: Database["public"]["Enums"]["subcategory"] | null;
           title?: string | null;
         };
@@ -179,45 +185,6 @@ export type Database = {
           name?: string | null;
         };
         Relationships: [];
-      };
-      t_user_vton: {
-        Row: {
-          created_at: string;
-          feedback: Database["public"]["Enums"]["feedback"] | null;
-          id: string;
-          user_id: string | null;
-          vton_id: string;
-        };
-        Insert: {
-          created_at?: string;
-          feedback?: Database["public"]["Enums"]["feedback"] | null;
-          id: string;
-          user_id?: string | null;
-          vton_id: string;
-        };
-        Update: {
-          created_at?: string;
-          feedback?: Database["public"]["Enums"]["feedback"] | null;
-          id?: string;
-          user_id?: string | null;
-          vton_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "t_user_vton_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "t_user";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "t_user_vton_vton_id_fkey";
-            columns: ["vton_id"];
-            isOneToOne: false;
-            referencedRelation: "t_vton";
-            referencedColumns: ["id"];
-          },
-        ];
       };
       t_vton: {
         Row: {

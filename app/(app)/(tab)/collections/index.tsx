@@ -1,11 +1,10 @@
-import { FlashList } from "@shopify/flash-list";
 import { useCursorInfiniteScrollQuery } from "@supabase-cache-helpers/postgrest-swr";
 import { useFileUrl } from "@supabase-cache-helpers/storage-swr";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
 import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TouchableOpacity } from "react-native";
+import { FlatList, TouchableOpacity, useWindowDimensions } from "react-native";
 import { H1, Spinner, Text, View, XStack, YStack } from "tamagui";
 import { Button } from "@/components/Button";
 import { Skeleton } from "@/components/Skeleton";
@@ -70,6 +69,7 @@ const VtonItem = memo(({ vton }: VtonItemProps) => {
 
 const VtonPage = memo(() => {
   const { t } = useTranslation(["common", "collections"]);
+  const { width } = useWindowDimensions();
   const session = useSessionStore((state) => state.session);
   const [category, setCategory] = useState<Category>("tops");
 
@@ -135,19 +135,17 @@ const VtonPage = memo(() => {
         </XStack>
       </YStack>
       {isLoading ? (
-        <FlashList
+        <FlatList
           numColumns={2}
-          data={Array.from({ length: 6 })}
-          estimatedItemSize={240}
           contentContainerStyle={{
             paddingHorizontal: 24,
+            paddingTop: 8,
+            paddingBottom: 8,
           }}
-          renderItem={({ index }) => (
-            <View
-              pt={index > 1 ? 16 : 0}
-              pl={index % 2 === 1 ? 8 : 0}
-              pr={index % 2 === 0 ? 8 : 0}
-            >
+          columnWrapperStyle={{ gap: 16 }}
+          data={Array.from({ length: 6 })}
+          renderItem={() => (
+            <View flex={1} mb="$4">
               <Skeleton
                 w="100%"
                 aspectRatio={3 / 4}
@@ -158,14 +156,16 @@ const VtonPage = memo(() => {
           )}
         />
       ) : (
-        <FlashList
+        <FlatList
           numColumns={2}
+          contentContainerStyle={{
+            paddingHorizontal: 24,
+            paddingTop: 8,
+            paddingBottom: 8,
+          }}
+          columnWrapperStyle={{ gap: 16 }}
           data={data}
           onEndReached={loadMore}
-          estimatedItemSize={240}
-          overrideProps={{
-            contentContainerStyle: { flexGrow: 1, paddingHorizontal: 24 },
-          }}
           ListFooterComponent={() =>
             isRefreshing && (
               <View pt="$4" justify="center">
@@ -200,12 +200,8 @@ const VtonPage = memo(() => {
               </YStack>
             </YStack>
           )}
-          renderItem={({ item, index }) => (
-            <View
-              pt={index > 1 ? 16 : 0}
-              pl={index % 2 === 1 ? 8 : 0}
-              pr={index % 2 === 0 ? 8 : 0}
-            >
+          renderItem={({ item }) => (
+            <View w={(width - 24 * 2 - 16) / 2} mb="$4">
               <VtonItem vton={item} />
             </View>
           )}
