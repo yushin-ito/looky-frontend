@@ -377,7 +377,6 @@
   },
   "details": {
     "shop": "Go to Shop",
-    "brand_name": "Brand Name",
-    "price": "Price"
+     "error": "Something went wrong. Please try again."
   }
 }
